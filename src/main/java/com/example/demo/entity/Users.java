@@ -20,6 +20,15 @@ public class Users {
 
 	private String password;
 
+	public Users() {
+		// TODO 自動生成されたコンストラクター・スタブ
+	}
+
+	public Users(String name, String password) {
+		this.name = name;
+		this.password = password;
+	}
+
 	public Integer getUserId() {
 		return userId;
 	}
