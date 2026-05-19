@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>商品一覧</title>
+	<link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+	<nav>
+		<form action="/items/sort" method="get">
+			<input type="radio" name="sort" value="asc" checked>昇順
+			<input type="radio" name="sort" value="desc">降順
+			<button>並び替え</button>
+		</form>
+
+		<a href="/items">全商品</a>
+		<a th:each="category:${categories}" th:href="@{/items(categoryId=${category.id})}" th:text="${category.name}"
+			style="margin-right: 5px;"></a>
+		<a href="/cart" style="padding-left: 10px;">カートを見る</a>
+	</nav>
+	<main>
+		<table>
+			<tr>
+				<th>NO</th>
+				<th>商品名</th>
+				<th>値段</th>
+				<th></th>
+			</tr>
+			<tr th:each="item:${items}">
+				<td th:text="${item.id}"></td>
+				<td><a th:href="@{/items/{id}(id=${item.id})}" th:text="${item.name}"></a></td>
+				<td th:text="${item.price}"></td>
+				<td>
+					<form action="/cart/add" method="post">
+						<input type="hidden" name="itemId" th:value="${item.id}">
+						<button>カートに追加</button>
+					</form>
+				</td>
+			</tr>
+		</table>
+	</main>
+</body>
+
+</html>

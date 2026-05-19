@@ -124,6 +124,7 @@ public class UsersController {
 
 		if (errorList.size() > 0) {
 			model.addAttribute("errorList", errorList);
+			model.addAttribute("name", name);
 			return "accountForm";
 		}
 

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>ログイン</title>
+</head>
+
+<body>
+	<header>
+		<h1>ToDoアプリ ログイン</h1>
+	</header>
+	<main>
+		<form action="/login" method="post">
+			<input type="text" name="name" placeholder="名前"><br>
+			<input type="password" name="password" placeholder="パスワード"><br>
+			<button>ログイン</button>
+			<th:block th:if="${errorList}">
+				<p th:each="error:${errorList}" th:text="${error}" style="color: red;"></p>
+			</th:block>
+		</form>
+		<a href="/users/add">新規登録はこちら</a>
+	</main>
+</body>
+
+</html>
