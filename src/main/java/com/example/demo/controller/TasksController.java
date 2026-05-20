@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.entity.Tasks;
@@ -78,6 +80,19 @@ public class TasksController {
 		//		model.addAttribute("categories", categoryList);
 
 		return "tasks";
+
+	}
+
+	@GetMapping("/tasks/create")
+	public String create() {
+		return "taskForm";
+	}
+
+	@PostMapping("/tasks/create")
+	public String register(@RequestBody String entity) {
+		//TODO: process POST request
+
+		return entity;
 	}
 
 }
