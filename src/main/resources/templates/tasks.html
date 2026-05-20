@@ -1,45 +1,96 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://thymeleaf.org">
 
 <head>
 	<meta charset="UTF-8">
-	<title>商品一覧</title>
-	<link rel="stylesheet" href="/css/style.css">
+	<title>タスク一覧</title>
 </head>
+
+<header th:replace="~{header}"></header>
+<hr>
 
 <body>
 	<nav>
-		<form action="/items/sort" method="get">
-			<input type="radio" name="sort" value="asc" checked>昇順
-			<input type="radio" name="sort" value="desc">降順
+		<form action="/tasks" method="get">
+			<input type="radio" name="category" value="3" checked>全て
+			<input type="radio" name="category" value="2">日常
+			<input type="radio" name="category" value="1">仕事
 			<button>並び替え</button>
 		</form>
-
-		<a href="/items">全商品</a>
-		<a th:each="category:${categories}" th:href="@{/items(categoryId=${category.id})}" th:text="${category.name}"
-			style="margin-right: 5px;"></a>
-		<a href="/cart" style="padding-left: 10px;">カートを見る</a>
 	</nav>
 	<main>
 		<table>
 			<tr>
-				<th>NO</th>
-				<th>商品名</th>
-				<th>値段</th>
 				<th></th>
-			</tr>
-			<tr th:each="item:${items}">
-				<td th:text="${item.id}"></td>
-				<td><a th:href="@{/items/{id}(id=${item.id})}" th:text="${item.name}"></a></td>
-				<td th:text="${item.price}"></td>
-				<td>
-					<form action="/cart/add" method="post">
-						<input type="hidden" name="itemId" th:value="${item.id}">
-						<button>カートに追加</button>
-					</form>
-				</td>
+				<th>タイトル</th>
+				<th>進捗状況</th>
+				<th>開始日</th>
+				<th>期限</th>
+				<th>メモ</th>
+				<th>更新</th>
+				<th>削除</th>
 			</tr>
 		</table>
+
+		<th:block th:unless="${showContent}">
+			<p>タスクを登録してください</p>
+		</th:block>
+
+
+		<th:block th:if="${showContent}">
+			<form method="get">
+				<table>
+					<!-- 1つ目のループ：日付ごとにMapのデータ（entry）を1つずつ取り出す -->
+					<th:block th:each="entry : ${tasksByDate}" th:with="dayTasks=${entry.value}">
+
+						<!-- 日付 + 日ごとの合計時間を表示する行 -->
+						<tr style="background-color: #f5f5f5; font-weight: bold;">
+							<td colspan="8">
+								<!-- 変更点：エンティティの表記に合わせて 'yyyy/MM/dd' 形式に変更 -->
+								<span th:text="${#temporals.format(entry.key, 'yyyy/MM/dd')}">2026/01/01</span>
+								（合計時間: <span th:text="${#aggregates.sum(dayTasks.![time])}">0</span>分）
+							</td>
+						</tr>
+
+						<!-- 2つ目のループ：その日付に紐づくタスクを1行ずつ表示 -->
+						<tr th:each="task : ${dayTasks}">
+							<td>
+								<label>
+									<input type="checkbox" name="selectedTasks" th:value="${task.taskId}">
+								</label>
+							</td>
+							<td><a th:href="@{/tasks/{taskId}(taskId=${task.taskId})}" th:text="${task.title}"></a></td>
+							<td th:text="${task.progress}"></td>
+
+							<!-- エンティティで定義したフォーマット済みのメソッドを呼び出す -->
+							<td th:text="${task.dateFormatted}"></td>
+							<td th:text="${task.closingDateFormatted}"></td>
+
+							<td th:text="${task.memo}"></td>
+							<td>
+								<form th:action="@{/tasks/{taskId}/edit(taskId=${task.taskId})}" method="get">
+									<button>更新</button>
+								</form>
+							</td>
+							<td>
+								<form th:action="@{/tasks/{taskId}/delete(taskId=${task.taskId})}" method="get">
+									<button>削除</button>
+								</form>
+							</td>
+						</tr>
+					</th:block>
+				</table>
+
+				<div>
+					<!-- th:formaction を使うことで、押したボタンに応じたURLへチェックデータを送信できます -->
+					<button type="submit" th:formaction="@{/tasks/batch-update}">まとめて更新</button>
+					<button type="submit" th:formaction="@{/tasks/batch-delete}">まとめて削除</button>
+				</div>
+			</form>
+		</th:block>
+		<form th:action="@{/tasks/create}" method="get">
+			<button>新規作成</button>
+		</form>
 	</main>
 </body>
 

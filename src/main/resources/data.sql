@@ -1,8 +1,8 @@
 -- users テーブルにデータを挿入するクエリ
-INSERT INTO users (user_id, name, password) VALUES (1, '田中太郎', 'test123'), (2, '鈴木一郎', 'test456');
+--INSERT INTO users (user_id, name, password) VALUES (1, '田中太郎', 'test123'), (2, '鈴木一郎', 'test456');
 
 -- tasks テーブルにデータを挿入するクエリ
-INSERT INTO tasks (task_id, user_id, title, closing_date, progress, memo,time, date) VALUES (1, 1, '見積もり', '2025-12-31', 0, '案件に適した見積もりを取る' ,'40' , '2025-12-30');
+INSERT INTO tasks (task_id, user_id, category_id, title, closing_date, progress, memo,time, date) VALUES (1, 1, 1, '見積もり', '2025-12-31', 0, '案件に適した見積もりを取る' ,'40' , '2025-12-30');
 
 -- categories テーブルにデータを挿入するクエリ
 INSERT INTO categories (category_id, category_name) VALUES (1, '仕事'), (2, '日常');

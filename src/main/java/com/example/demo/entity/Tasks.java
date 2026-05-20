@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,6 +21,9 @@ public class Tasks {
 
 	@Column(name = "user_id")
 	private Integer userId;
+
+	@Column(name = "category_id")
+	private Integer categoryId;
 
 	private String title;
 
@@ -54,6 +58,15 @@ public class Tasks {
 		return closingDate;
 	}
 
+	public String getClosingDateFormatted() {
+		if (this.closingDate == null) {
+			return "";
+		}
+		// 表示形式を定義
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+		return this.closingDate.format(formatter);
+	}
+
 	public Integer getProgress() {
 		return progress;
 	}
@@ -68,6 +81,15 @@ public class Tasks {
 
 	public LocalDate getDate() {
 		return date;
+	}
+
+	public String getDateFormatted() {
+		if (this.date == null) {
+			return "";
+		}
+		// 表示形式を定義
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+		return this.date.format(formatter);
 	}
 
 }

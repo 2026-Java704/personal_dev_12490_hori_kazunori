@@ -7,5 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.demo.entity.Tasks;
 
 public interface TasksRepository extends JpaRepository<Tasks, Integer> {
-	List<Tasks> findByUserIdOrderByClosingDateDesc(Integer userId);
+	List<Tasks> findByUserIdOrderByClosingDateAsc(Integer userId);
+
+	List<Tasks> findByUserIdOrderByDateAsc(Integer userId);
+
+	List<Tasks> findByUserIdAndCategoryId(Integer userId, Integer category);
 }

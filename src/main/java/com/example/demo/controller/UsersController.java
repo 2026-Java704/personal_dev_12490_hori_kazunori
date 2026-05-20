@@ -1,7 +1,10 @@
 package com.example.demo.controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -11,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.demo.entity.Categories;
 import com.example.demo.entity.Tasks;
 import com.example.demo.entity.Users;
 import com.example.demo.model.Account;
@@ -74,21 +76,38 @@ public class UsersController {
 		account.setUserId(usersRepository.findByNameAndPassword(name, password).getFirst().getUserId());
 		account.setName(name);
 
-		List<Tasks> taskList = tasksRepository.findByUserIdOrderByClosingDateDesc(account.getUserId());
-		model.addAttribute("tasks", taskList);
-		if (taskList != null && taskList.isEmpty()) {
-			int sum = 0;
-			for (int i = 0; i < taskList.size(); i++) {
-				sum += taskList.get(i).getTime();
+		List<Tasks> taskList = tasksRepository.findByUserIdOrderByDateAsc(account.getUserId());
 
+		// 日付順（古い順）に自動ソートされるMapを用意
+		Map<LocalDate, List<Tasks>> tasksByDate = new TreeMap<>();
+
+		if (taskList != null && !taskList.isEmpty()) {
+			for (Tasks task : taskList) {
+				LocalDate startDate = task.getDate();
+				LocalDate endDate = task.getClosingDate();
+
+				if (startDate == null || endDate == null) {
+					continue;
+				}
+
+				// 開始日から期限日まで1日ずつ展開してMapに登録
+				LocalDate current = startDate;
+				while (!current.isAfter(endDate)) {
+					tasksByDate.computeIfAbsent(current, k -> new ArrayList<>()).add(task);
+					current = current.plusDays(1);
+				}
 			}
-			model.addAttribute("sum", sum);
 		}
 
-		List<Categories> categoryList = categoriesRepository.findAll();
-		model.addAttribute("categories", categoryList);
+		// 画面に日付ごとのデータを渡す
+		model.addAttribute("tasksByDate", tasksByDate);
+		// データがあればtrue
+		model.addAttribute("showContent", tasksByDate != null && !tasksByDate.isEmpty());
 
-		return "redirect:/tasks";
+		//		List<Categories> categoryList = categoriesRepository.findAll();
+		//		model.addAttribute("categories", categoryList);
+
+		return "tasks";
 	}
 
 	//	新規ユーザー登録画面表示
