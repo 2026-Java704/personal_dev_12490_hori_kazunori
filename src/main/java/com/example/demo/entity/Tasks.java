@@ -60,6 +60,21 @@ public class Tasks {
 		this.memo = memo;
 	}
 
+	public Tasks(Integer userId, Integer taskId, Integer categoryId,
+			String title,
+			LocalDate date, LocalDate closingDate,
+			Integer progress, Integer time, String memo) {
+		this.userId = userId;
+		this.taskId = taskId;
+		this.categoryId = categoryId;
+		this.title = title;
+		this.date = date;
+		this.closingDate = closingDate;
+		this.progress = progress;
+		this.time = time;
+		this.memo = memo;
+	}
+
 	public Integer getTaskId() {
 		return taskId;
 	}

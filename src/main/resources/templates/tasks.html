@@ -64,7 +64,7 @@
 								<td th:case="'1'">仕事</td>
 								<td th:case="'2'">日常</td>
 							</th:block>
-							<td><a th:href="@{/tasks/{taskId}(taskId=${task.taskId})}" th:text="${task.title}"></a></td>
+							<td><a th:text="${task.title}"></a></td>
 							<th:block th:switch="${task.progress}">
 								<td th:case="'0'">未着手</td>
 								<td th:case="'1'">進行中</td>

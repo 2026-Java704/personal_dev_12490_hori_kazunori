@@ -107,14 +107,15 @@ public class TasksController {
 
 	//	タスク更新処理
 	@PostMapping("/tasks/{taskId}/edit")
-	public String edit(@RequestParam Integer categoryId, @RequestParam(defaultValue = "") String title,
+	public String edit(@PathVariable Integer taskId, @RequestParam Integer categoryId,
+			@RequestParam(defaultValue = "") String title,
 			@DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate date,
 			@DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate closingDate,
 			@RequestParam(defaultValue = "") Integer time,
 			@RequestParam(defaultValue = "") String memo,
 			@RequestParam(defaultValue = "") Integer progress,
 			Model model) {
-		Tasks task = new Tasks(account.getUserId(), categoryId, title, date, closingDate, progress, time, memo);
+		Tasks task = new Tasks(account.getUserId(), taskId, categoryId, title, date, closingDate, progress, time, memo);
 		// エラー
 		List<String> errorList = new ArrayList<>();
 		if (title.equals("")) {
@@ -143,6 +144,7 @@ public class TasksController {
 	//	個別選択:タスク削除
 	@PostMapping("/tasks/{taskId}/delete")
 	public String delete(@PathVariable Integer taskId) {
+		//		もしかしてこれだと別のユーザーの同じtaskIdのものまでけしてる…？
 		tasksRepository.deleteById(taskId);
 
 		return "redirect:/tasks";
