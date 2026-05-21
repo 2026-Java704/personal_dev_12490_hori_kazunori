@@ -12,9 +12,9 @@
 <body>
 	<nav>
 		<form action="/tasks" method="get">
-			<input type="radio" name="category" value="3" checked>全て
-			<input type="radio" name="category" value="2">日常
-			<input type="radio" name="category" value="1">仕事
+			<input type="radio" name="categoryId" value="3" checked>全て
+			<input type="radio" name="categoryId" value="2">日常
+			<input type="radio" name="categoryId" value="1">仕事
 			<button>並び替え</button>
 		</form>
 	</nav>
@@ -41,7 +41,7 @@
 						<th>更新</th>
 						<th>削除</th>
 					</tr>
-					<!-- 1つ目のループ：日付ごとにMapのデータ（entry）を1つずつ取り出す -->
+					<!-- 1つ目のループ：日付ごとにMapのデータを1つずつ取り出す -->
 					<th:block th:each="entry : ${tasksByDate}" th:with="dayTasks=${entry.value}">
 
 						<!-- 日付 + 日ごとの合計時間を表示する行 -->
@@ -81,8 +81,9 @@
 								</form>
 							</td>
 							<td>
-								<form th:action="@{/tasks/{taskId}/delete(taskId=${task.taskId})}" method="get">
-									<button>削除</button>
+								<form th:action="@{/tasks/{taskId}/delete(taskId=${task.taskId})}" method="post"
+									th:onsubmit="return confirm('本当に削除しますか？');">
+									<button type="submit">削除</button>
 								</form>
 							</td>
 						</tr>
@@ -90,7 +91,7 @@
 				</table>
 
 				<div>
-					<!-- th:formaction を使うことで、押したボタンに応じたURLへチェックデータを送信できます -->
+					<!-- th:formaction を使うと、押したボタンに応じたURLへデータを送信できる -->
 					<button type="submit" th:formaction="@{/tasks/batch-update}">まとめて更新</button>
 					<button type="submit" th:formaction="@{/tasks/batch-delete}">まとめて削除</button>
 				</div>

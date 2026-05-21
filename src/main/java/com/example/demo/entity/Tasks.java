@@ -42,6 +42,24 @@ public class Tasks {
 	//	タスク開始日
 	private LocalDate date;
 
+	public Tasks() {
+		// TODO 自動生成されたコンストラクター・スタブ
+	}
+
+	public Tasks(Integer userId, Integer categoryId,
+			String title,
+			LocalDate date, LocalDate closingDate,
+			Integer progress, Integer time, String memo) {
+		this.userId = userId;
+		this.categoryId = categoryId;
+		this.title = title;
+		this.date = date;
+		this.closingDate = closingDate;
+		this.progress = progress;
+		this.time = time;
+		this.memo = memo;
+	}
+
 	public Integer getTaskId() {
 		return taskId;
 	}

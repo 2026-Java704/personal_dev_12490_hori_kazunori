@@ -1,10 +1,7 @@
 package com.example.demo.controller;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -14,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.demo.entity.Tasks;
 import com.example.demo.entity.Users;
 import com.example.demo.model.Account;
 import com.example.demo.repository.CategoriesRepository;
@@ -41,7 +37,7 @@ public class UsersController {
 	}
 
 	//	始まりの画面(ログイン)表示
-	@GetMapping({ "/", "/login", "/logout" })
+	@GetMapping({ "/", "/login" })
 	public String index() {
 		// セッション情報を全てクリアする
 		session.invalidate();
@@ -76,38 +72,7 @@ public class UsersController {
 		account.setUserId(usersRepository.findByNameAndPassword(name, password).getFirst().getUserId());
 		account.setName(name);
 
-		List<Tasks> taskList = tasksRepository.findByUserIdOrderByDateAsc(account.getUserId());
-
-		// 古い順にソートされるMapを用意
-		Map<LocalDate, List<Tasks>> tasksByDate = new TreeMap<>();
-
-		if (taskList != null && !taskList.isEmpty()) {
-			for (Tasks task : taskList) {
-				LocalDate startDate = task.getDate();
-				LocalDate endDate = task.getClosingDate();
-
-				if (startDate == null || endDate == null) {
-					continue;
-				}
-
-				// 開始日から期限日まで1日ずつMapに登録
-				LocalDate current = startDate;
-				while (!current.isAfter(endDate)) {
-					tasksByDate.computeIfAbsent(current, k -> new ArrayList<>()).add(task);
-					current = current.plusDays(1);
-				}
-			}
-		}
-
-		// 画面に日付ごとのデータを渡す
-		model.addAttribute("tasksByDate", tasksByDate);
-		// データがあればtrue
-		model.addAttribute("showContent", tasksByDate != null && !tasksByDate.isEmpty());
-
-		//		List<Categories> categoryList = categoriesRepository.findAll();
-		//		model.addAttribute("categories", categoryList);
-
-		return "tasks";
+		return "redirect:/tasks";
 	}
 
 	//	新規ユーザー登録画面表示
@@ -149,6 +114,12 @@ public class UsersController {
 
 		Users users = new Users(name, password);
 		usersRepository.save(users);
+
+		return "redirect:/login";
+	}
+
+	@GetMapping("/logout")
+	public String logout() {
 
 		return "redirect:/login";
 	}

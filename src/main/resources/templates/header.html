@@ -1,5 +1,5 @@
 <header>
 	<h1><a href="/tasks">ToDoアプリ</a></h1>
 	[[${@account.name}]]さんがログイン中
-	<a href="/logout">ログアウト</a>
+	<a href="/logout" th:onclick="return confirm('ログアウトしますか？');">ログアウト</a>
 </header>

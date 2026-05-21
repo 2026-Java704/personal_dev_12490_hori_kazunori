@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>新規タスク作成</title>
+	<title>タスク更新</title>
 </head>
 
 <header th:replace="~{header}"></header>
@@ -11,20 +11,28 @@
 
 <body>
 	<main>
-		<h1>新規タスク作成</h1>
-		<form action="/tasks/create" method="post">
+		<h1>タスク更新</h1>
+		<form th:action="@{/tasks/{taskId}/edit(taskId=${task.taskId})}" method="post">
 			<table border="1">
 				<tr>
 					<th>カテゴリー</th>
 					<td>
-						<input type="radio" name="categoryId" value="2" checked>日常
-						<input type="radio" name="categoryId" value="1">仕事
+						<input type="radio" name="categoryId" th:field="${task.categoryId}" value="2" checked>日常
+						<input type="radio" name="categoryId" th:field="${task.categoryId}" value="1">仕事
 					</td>
 				</tr>
 				<tr>
 					<th>タイトル</th>
 					<td>
 						<input type="text" name="title" th:value="${task.title}">
+					</td>
+				</tr>
+				<tr>
+					<th>タ進捗状況</th>
+					<td>
+						<input type="radio" name="progress" th:field="${task.progress}" value="0" checked>未着手
+						<input type="radio" name="progress" th:field="${task.progress}" value="1">進行中
+						<input type="radio" name="progress" th:field="${task.progress}" value="2">完了
 					</td>
 				</tr>
 				<tr>
@@ -53,9 +61,8 @@
 						<textarea name="memo" style="width:200px; height:80px;" th:text="${task.memo}"></textarea>
 					</td>
 				</tr>
-				<input type="hidden" name="progress" value="0">
 			</table>
-			<button>新規作成</button>
+			<button>更新</button>
 			<th:block th:if="${errorList}">
 				<p th:each="error:${errorList}" th:text="${error}" style="color: red;"></p>
 			</th:block>
