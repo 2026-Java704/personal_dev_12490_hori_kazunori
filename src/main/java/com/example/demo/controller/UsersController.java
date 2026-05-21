@@ -78,7 +78,7 @@ public class UsersController {
 
 		List<Tasks> taskList = tasksRepository.findByUserIdOrderByDateAsc(account.getUserId());
 
-		// 日付順（古い順）に自動ソートされるMapを用意
+		// 古い順にソートされるMapを用意
 		Map<LocalDate, List<Tasks>> tasksByDate = new TreeMap<>();
 
 		if (taskList != null && !taskList.isEmpty()) {
@@ -90,7 +90,7 @@ public class UsersController {
 					continue;
 				}
 
-				// 開始日から期限日まで1日ずつ展開してMapに登録
+				// 開始日から期限日まで1日ずつMapに登録
 				LocalDate current = startDate;
 				while (!current.isAfter(endDate)) {
 					tasksByDate.computeIfAbsent(current, k -> new ArrayList<>()).add(task);

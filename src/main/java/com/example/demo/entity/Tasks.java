@@ -39,7 +39,7 @@ public class Tasks {
 	//	予定所要時間
 	private Integer time;
 
-	//	登録実行した日付
+	//	タスク開始日
 	private LocalDate date;
 
 	public Integer getTaskId() {
@@ -77,6 +77,10 @@ public class Tasks {
 
 	public Integer getTime() {
 		return time;
+	}
+
+	public Integer getCategoryId() {
+		return categoryId;
 	}
 
 	public LocalDate getDate() {

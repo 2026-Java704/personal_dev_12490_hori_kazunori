@@ -12,25 +12,45 @@
 		<form action="/tasks/create" method="post">
 			<table border="1">
 				<tr>
-					<th>ユーザー名</th>
+					<th>カテゴリー</th>
 					<td>
-						<input type="text" name="name" th:value="${name}">
+						<input type="radio" name="categoryId" value="2" checked>日常
+						<input type="radio" name="categoryId" value="1">仕事
 					</td>
 				</tr>
 				<tr>
-					<th>パスワード</th>
+					<th>タイトル</th>
 					<td>
-						<input type="text" name="password">
+						<input type="text" name="title">
 					</td>
 				</tr>
 				<tr>
-					<th>確認パスワード</th>
+					<th>タスク開始日</th>
 					<td>
-						<input type="text" name="passwordConfirm">
+						<input type="date" name="date">
 					</td>
 				</tr>
+				<tr>
+					<th>期限</th>
+					<td>
+						<input type="date" name="closingDate">
+					</td>
+				</tr>
+				<tr>
+					<th>予定所要時間</th>
+					<td>
+						<label><input type="number" name="time">分</label>
+					</td>
+				</tr>
+				<tr>
+					<th>メモ</th>
+					<td>
+						<textarea  name="memo" style="width:200px; height:80px;"></textarea>
+					</td>
+				</tr>
+				<input type="hidden" name="progress" value="0">
 			</table>
-			<button>登録</button>
+			<button>新規作成</button>
 			<th:block th:if="${errorList}">
 				<p th:each="error:${errorList}" th:text="${error}" style="color: red;"></p>
 			</th:block>

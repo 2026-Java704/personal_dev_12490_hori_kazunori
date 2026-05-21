@@ -19,34 +19,35 @@
 		</form>
 	</nav>
 	<main>
-		<table>
-			<tr>
-				<th></th>
-				<th>タイトル</th>
-				<th>進捗状況</th>
-				<th>開始日</th>
-				<th>期限</th>
-				<th>メモ</th>
-				<th>更新</th>
-				<th>削除</th>
-			</tr>
-		</table>
-
 		<th:block th:unless="${showContent}">
-			<p>タスクを登録してください</p>
+			<table>
+				<tr>
+					<th>タスクを登録してください</th>
+				</tr>
+			</table>
 		</th:block>
-
 
 		<th:block th:if="${showContent}">
 			<form method="get">
 				<table>
+					<tr>
+						<th></th>
+						<th>カテゴリー</th>
+						<th>タイトル</th>
+						<th>進捗状況</th>
+						<th>開始日</th>
+						<th>期限</th>
+						<th>メモ</th>
+						<th>更新</th>
+						<th>削除</th>
+					</tr>
 					<!-- 1つ目のループ：日付ごとにMapのデータ（entry）を1つずつ取り出す -->
 					<th:block th:each="entry : ${tasksByDate}" th:with="dayTasks=${entry.value}">
 
 						<!-- 日付 + 日ごとの合計時間を表示する行 -->
 						<tr style="background-color: #f5f5f5; font-weight: bold;">
-							<td colspan="8">
-								<!-- 変更点：エンティティの表記に合わせて 'yyyy/MM/dd' 形式に変更 -->
+							<td colspan="9">
+								<!-- 'yyyy/MM/dd' 形式に変更 -->
 								<span th:text="${#temporals.format(entry.key, 'yyyy/MM/dd')}">2026/01/01</span>
 								（合計時間: <span th:text="${#aggregates.sum(dayTasks.![time])}">0</span>分）
 							</td>
@@ -59,10 +60,17 @@
 									<input type="checkbox" name="selectedTasks" th:value="${task.taskId}">
 								</label>
 							</td>
+							<th:block th:switch="${task.categoryId}">
+								<td th:case="'1'">仕事</td>
+								<td th:case="'2'">日常</td>
+							</th:block>
 							<td><a th:href="@{/tasks/{taskId}(taskId=${task.taskId})}" th:text="${task.title}"></a></td>
-							<td th:text="${task.progress}"></td>
+							<th:block th:switch="${task.progress}">
+								<td th:case="'0'">未着手</td>
+								<td th:case="'1'">進行中</td>
+								<td th:case="'2'">完了</td>
+							</th:block>
 
-							<!-- エンティティで定義したフォーマット済みのメソッドを呼び出す -->
 							<td th:text="${task.dateFormatted}"></td>
 							<td th:text="${task.closingDateFormatted}"></td>
 
