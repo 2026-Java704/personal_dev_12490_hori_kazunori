@@ -4,117 +4,172 @@
 <head>
 	<meta charset="UTF-8">
 	<title>タスク一覧</title>
+	<link href="/bootstrap/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <header th:replace="~{header}"></header>
-<hr>
 
-<body>
-	<nav>
-		<form action="/tasks" method="get">
-			<input type="radio" name="categoryId" value="0" checked>全て
-			<input type="radio" name="categoryId" value="2">日常
-			<input type="radio" name="categoryId" value="1">仕事
-			<button>並び替え</button>
-		</form>
-	</nav>
-	<main>
+<body class="bg-light">
+	<main class="container my-4">
+
+		<!-- ページタイトルと新規作成ボタン -->
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<h1 class="h3 mb-0 text-secondary">タスク一覧</h1>
+			<form th:action="@{/tasks/create}" method="get">
+				<button class="btn btn-primary shadow-sm">＋ 新規作成</button>
+			</form>
+		</div>
+
+		<!-- フィルター・並び替えエリア -->
+		<div class="card shadow-sm mb-4">
+			<div class="card-body">
+				<form action="/tasks" method="get" class="row g-3 align-items-center">
+					<div class="col-auto d-flex align-items-center gap-3">
+						<span class="fw-bold text-muted small">カテゴリー：</span>
+						<div class="form-check form-check-inline mb-0">
+							<input class="form-check-input" type="radio" name="categoryId" id="catAll" value="0"
+								checked>
+							<label class="form-check-label" for="catAll">全て</label>
+						</div>
+						<div class="form-check form-check-inline mb-0">
+							<input class="form-check-input" type="radio" name="categoryId" id="catDaily" value="2">
+							<label class="form-check-label" for="catDaily">日常</label>
+						</div>
+						<div class="form-check form-check-inline mb-0">
+							<input class="form-check-input" type="radio" name="categoryId" id="catWork" value="1">
+							<label class="form-check-label" for="catWork">仕事</label>
+						</div>
+					</div>
+					<div class="col-auto">
+						<button class="btn btn-outline-secondary btn-sm">並び替え</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<!-- タスクが存在しない場合の表示 -->
 		<th:block th:unless="${showContent}">
-			<table>
-				<tr>
-					<th>タスクを登録してください</th>
-				</tr>
-			</table>
+			<div class="alert alert-info text-center shadow-sm" role="alert">
+				タスクを登録してください
+			</div>
 		</th:block>
 
+		<!-- タスクが存在する場合のメインコンテンツ -->
 		<th:block th:if="${showContent}">
 			<form method="post">
-				<table>
-					<tr>
-						<th></th>
-						<th>カテゴリー</th>
-						<th>タイトル</th>
-						<th>進捗状況</th>
-						<th>開始日</th>
-						<th>期限</th>
-						<th>メモ</th>
-						<th>更新</th>
-						<th>削除</th>
-					</tr>
-					<!-- 1つ目のループ：日付ごとにMapのデータを1つずつ取り出す -->
-					<th:block th:each="entry : ${tasksByDate}" th:with="dayTasks=${entry.value}">
 
-						<!-- 日付 + 日ごとの合計時間を表示する(仕切り) -->
-						<tr style="background-color: #f5f5f5; font-weight: bold;">
-							<td colspan="9">
-								<!-- 'yyyy/MM/dd' 形式に変更 -->
-								<span th:text="${#temporals.format(entry.key, 'yyyy/MM/dd')}">2026/01/01</span>
-								（合計時間: <span
-									th:text="${#aggregates.sum(dayTasks.?[progress != 2].![time]) ?: 0}">0</span>分）
-							</td>
-						</tr>
+				<!-- テーブルの外枠を丸角・シャドウ付きのカードにする -->
+				<div class="card shadow-sm mb-4 overflow-hidden">
+					<div class="table-responsive">
+						<!-- Bootstrapのテーブルクラスを適用 -->
+						<table class="table table-hover align-middle mb-0">
+							<thead class="table-dark">
+								<tr>
+									<th scope="col" style="width: 40px;"></th>
+									<th scope="col">カテゴリー</th>
+									<th scope="col">タイトル</th>
+									<th scope="col">進捗状況</th>
+									<th scope="col">開始日</th>
+									<th scope="col">期限</th>
+									<th scope="col">メモ</th>
+									<th scope="col" class="text-center">更新</th>
+									<th scope="col" class="text-center">削除</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- 1つ目のループ：日付ごとにMapのデータを1つずつ取り出す -->
+								<th:block th:each="entry : ${tasksByDate}" th:with="dayTasks=${entry.value}">
 
-						<!-- 2つ目のループ：その日付に紐づくタスクを1行ずつ表示 -->
-						<tr th:each="task : ${dayTasks}">
-							<td>
-								<label>
-									<input type="checkbox" name="selectedTasksId" th:value="${task.taskId}">
-								</label>
-							</td>
-							<th:block th:switch="${task.categoryId}">
-								<td th:case="'1'">仕事</td>
-								<td th:case="'2'">日常</td>
-							</th:block>
-							<td><a th:text="${task.title}"></a></td>
-							<th:block th:switch="${task.progress}">
-								<td th:case="'0'">未着手</td>
-								<td th:case="'1'">進行中</td>
-								<td th:case="'2'">完了</td>
-							</th:block>
+									<!-- 日付 + 日ごとの合計時間を表示する(仕切り行) -->
+									<tr class="table-light fw-bold text-secondary border-bottom-2">
+										<td colspan="9" class="py-2 px-3 bg-light">
+											<i class="bi bi-calendar3 me-1"></i>
+											<span
+												th:text="${#temporals.format(entry.key, 'yyyy/MM/dd')}">2026/01/01</span>
+											<span class="badge bg-secondary ms-2">
+												合計時間: <span
+													th:text="${#aggregates.sum(dayTasks.?[progress != 2].![time]) ?: 0}">0</span>
+												分
+											</span>
+										</td>
+									</tr>
 
-							<td th:text="${task.dateFormatted}"></td>
-							<td th:text="${task.closingDateFormatted}"></td>
+									<!-- 2つ目のループ：その日付に紐づくタスクを1行ずつ表示 -->
+									<tr th:each="task : ${dayTasks}">
+										<td class="text-center">
+											<input class="form-check-input" type="checkbox" name="selectedTasksId"
+												th:value="${task.taskId}">
+										</td>
+										<!-- カテゴリーごとのバッジ装飾 -->
+										<td>
+											<th:block th:switch="${task.categoryId}">
+												<span th:case="'1'" class="badge bg-info text-dark">仕事</span>
+												<span th:case="'2'" class="badge bg-warning text-dark">日常</span>
+											</th:block>
+										</td>
+										<td>
+											<span class="fw-bold text-dark" th:text="${task.title}">タイトル</span>
+										</td>
+										<!-- 進捗状況ごとの色分けバッジ -->
+										<td>
+											<th:block th:switch="${task.progress}">
+												<span th:case="'0'" class="badge bg-secondary">未着手</span>
+												<span th:case="'1'" class="badge bg-primary">進行中</span>
+												<span th:case="'2'" class="badge bg-success">完了</span>
+											</th:block>
+										</td>
 
-							<td th:text="${task.memo}"></td>
-							<td>
-								<a th:href="@{/tasks/{taskId}/edit(taskId=${task.taskId})}"
-									style="text-decoration: none;">
-									<button type="button">更新</button>
-								</a>
+										<td th:text="${task.dateFormatted}" class="text-muted small"></td>
+										<td th:text="${task.closingDateFormatted}" class="text-muted small"></td>
+										<td th:text="${task.memo}" class="text-truncate" style="max-width: 200px;"></td>
 
-							</td>
-							<td>
-								<button type="submit" th:formaction="@{/tasks/{taskId}/delete(taskId=${task.taskId})}"
-									th:data-confirm-message="タスクを削除します。よろしいですか？"
-									onclick="return confirm(this.getAttribute('data-confirm-message'));">
-									削除
-								</button>
-							</td>
-						</tr>
-					</th:block>
-				</table>
+										<!-- 更新ボタン（青系の小さいデザイン） -->
+										<td class="text-center">
+											<a th:href="@{/tasks/{taskId}/edit(taskId=${task.taskId})}"
+												class="btn btn-outline-primary btn-sm">
+												更新
+											</a>
+										</td>
+										<!-- 削除ボタン（赤系の小さいデザイン） -->
+										<td class="text-center">
+											<button type="submit"
+												th:formaction="@{/tasks/{taskId}/delete(taskId=${task.taskId})}"
+												th:data-confirm-message="タスクを削除します。よろしいですか？"
+												onclick="return confirm(this.getAttribute('data-confirm-message'));"
+												class="btn btn-outline-danger btn-sm">
+												削除
+											</button>
+										</td>
+									</tr>
+								</th:block>
+							</tbody>
+						</table>
+					</div>
+				</div>
 
-				<div>
-					<!-- th:formaction を使うと、押したボタンに応じたURLへデータを送信できる -->
+				<!-- 下部の一括操作ボタン群 -->
+				<div class="d-flex flex-wrap gap-2 justify-content-end mb-5">
 					<button type="submit" th:formaction="@{/tasks/batch-update}"
-						onclick="return confirm('選択したタスクの進捗状況を進めます。よろしいですか？\n\n未着手 → 進行中\n進行中 → 完了\n\nに変更されます');">
+						onclick="return confirm('選択したタスクの進捗状況を進めます。よろしいですか？\n\n未着手 → 進行中\n進行中 → 完了\n\nに変更されます');"
+						class="btn btn-success shadow-sm">
 						まとめて進捗更新
 					</button>
 					<button type="submit" th:formaction="@{/tasks/batch-delete}"
-						onclick="return confirm('選択したタスクを削除します。よろしいですか？');">
+						onclick="return confirm('選択したタスクを削除します。よろしいですか？');"
+						class="btn btn-danger shadow-sm">
 						まとめて削除
 					</button>
 					<button type="submit" th:formaction="@{/tasks/delete-completed}"
-						onclick="return confirm('完了済みのタスクをすべて削除します。よろしいですか？');">
-						完了タスクを一括削除
+						onclick="return confirm('完了済みのタスクをすべて削除します。よろしいですか？');"
+						class="btn btn-outline-danger shadow-sm">
+						完了タスク一括削除
 					</button>
 				</div>
 			</form>
 		</th:block>
-		<form th:action="@{/tasks/create}" method="get">
-			<button>新規作成</button>
-		</form>
 	</main>
+
+	<script src="/bootstrap/bootstrap.min.js"></script>
 </body>
 
 </html>
