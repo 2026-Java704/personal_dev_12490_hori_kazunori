@@ -100,6 +100,10 @@ public class Tasks {
 		return this.closingDate.format(formatter);
 	}
 
+	public void setProgress(Integer progress) {
+		this.progress = progress;
+	}
+
 	public Integer getProgress() {
 		return progress;
 	}

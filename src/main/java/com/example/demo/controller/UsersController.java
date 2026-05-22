@@ -24,16 +24,12 @@ public class UsersController {
 	private final Account account;
 
 	private final UsersRepository usersRepository;
-	private final CategoriesRepository categoriesRepository;
-	private final TasksRepository tasksRepository;
 
 	public UsersController(HttpSession session, Account account, UsersRepository usersRepository,
 			CategoriesRepository categoriesRepository, TasksRepository tasksRepository) {
 		this.session = session;
 		this.account = account;
 		this.usersRepository = usersRepository;
-		this.categoriesRepository = categoriesRepository;
-		this.tasksRepository = tasksRepository;
 	}
 
 	//	始まりの画面(ログイン)表示

@@ -12,7 +12,7 @@
 <body>
 	<nav>
 		<form action="/tasks" method="get">
-			<input type="radio" name="categoryId" value="3" checked>全て
+			<input type="radio" name="categoryId" value="0" checked>全て
 			<input type="radio" name="categoryId" value="2">日常
 			<input type="radio" name="categoryId" value="1">仕事
 			<button>並び替え</button>
@@ -28,7 +28,7 @@
 		</th:block>
 
 		<th:block th:if="${showContent}">
-			<form method="get">
+			<form method="post">
 				<table>
 					<tr>
 						<th></th>
@@ -44,12 +44,13 @@
 					<!-- 1つ目のループ：日付ごとにMapのデータを1つずつ取り出す -->
 					<th:block th:each="entry : ${tasksByDate}" th:with="dayTasks=${entry.value}">
 
-						<!-- 日付 + 日ごとの合計時間を表示する行 -->
+						<!-- 日付 + 日ごとの合計時間を表示する(仕切り) -->
 						<tr style="background-color: #f5f5f5; font-weight: bold;">
 							<td colspan="9">
 								<!-- 'yyyy/MM/dd' 形式に変更 -->
 								<span th:text="${#temporals.format(entry.key, 'yyyy/MM/dd')}">2026/01/01</span>
-								（合計時間: <span th:text="${#aggregates.sum(dayTasks.![time])}">0</span>分）
+								（合計時間: <span
+									th:text="${#aggregates.sum(dayTasks.?[progress != 2].![time]) ?: 0}">0</span>分）
 							</td>
 						</tr>
 
@@ -57,7 +58,7 @@
 						<tr th:each="task : ${dayTasks}">
 							<td>
 								<label>
-									<input type="checkbox" name="selectedTasks" th:value="${task.taskId}">
+									<input type="checkbox" name="selectedTasksId" th:value="${task.taskId}">
 								</label>
 							</td>
 							<th:block th:switch="${task.categoryId}">
@@ -76,15 +77,18 @@
 
 							<td th:text="${task.memo}"></td>
 							<td>
-								<form th:action="@{/tasks/{taskId}/edit(taskId=${task.taskId})}" method="get">
-									<button>更新</button>
-								</form>
+								<a th:href="@{/tasks/{taskId}/edit(taskId=${task.taskId})}"
+									style="text-decoration: none;">
+									<button type="button">更新</button>
+								</a>
+
 							</td>
 							<td>
-								<form th:action="@{/tasks/{taskId}/delete(taskId=${task.taskId})}" method="post"
-									th:onsubmit="return confirm('本当に削除しますか？');">
-									<button type="submit">削除</button>
-								</form>
+								<button type="submit" th:formaction="@{/tasks/{taskId}/delete(taskId=${task.taskId})}"
+									th:data-confirm-message="タスクを削除します。よろしいですか？"
+									onclick="return confirm(this.getAttribute('data-confirm-message'));">
+									削除
+								</button>
 							</td>
 						</tr>
 					</th:block>
@@ -92,8 +96,18 @@
 
 				<div>
 					<!-- th:formaction を使うと、押したボタンに応じたURLへデータを送信できる -->
-					<button type="submit" th:formaction="@{/tasks/batch-update}">まとめて更新</button>
-					<button type="submit" th:formaction="@{/tasks/batch-delete}">まとめて削除</button>
+					<button type="submit" th:formaction="@{/tasks/batch-update}"
+						onclick="return confirm('選択したタスクの進捗状況を進めます。よろしいですか？\n\n未着手 → 進行中\n進行中 → 完了\n\nに変更されます');">
+						まとめて進捗更新
+					</button>
+					<button type="submit" th:formaction="@{/tasks/batch-delete}"
+						onclick="return confirm('選択したタスクを削除します。よろしいですか？');">
+						まとめて削除
+					</button>
+					<button type="submit" th:formaction="@{/tasks/delete-completed}"
+						onclick="return confirm('完了済みのタスクをすべて削除します。よろしいですか？');">
+						完了タスクを一括削除
+					</button>
 				</div>
 			</form>
 		</th:block>
