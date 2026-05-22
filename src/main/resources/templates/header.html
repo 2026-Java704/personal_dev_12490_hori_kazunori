@@ -1,5 +1,29 @@
-<header>
-	<h1><a href="/tasks">ToDoアプリ</a></h1>
-	[[${@account.name}]]さんがログイン中
-	<a href="/logout" th:onclick="return confirm('ログアウトします。よろしいですか？');">ログアウト</a>
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ToDoアプリ</title>
+    <link href="/bootstrap/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<header class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand fs-3 fw-bold text-white text-decoration-none" href="/tasks">ToDoアプリ</a>
+        
+        <div class="d-flex align-items-center gap-3">
+            <span class="text-light opacity-75">
+                <span class="fw-bold text-white" th:text="${@account.name}">ユーザー</span> さんがログイン中
+            </span>
+            <a href="/logout" 
+               class="btn btn-outline-light btn-sm px-3" 
+               th:onclick="return confirm('ログアウトします。よろしいですか？');">
+               ログアウト
+            </a>
+        </div>
+    </div>
 </header>
+
+<script src="/bootstrap/bootstrap.min.js"></script>
+</body>
+</html>

@@ -58,10 +58,10 @@
 		<th:block th:if="${showContent}">
 			<form method="post">
 
-				<!-- テーブルの外枠を丸角・シャドウ付きのカードにする -->
+				<!-- 丸角・シャドウ付きのカードにする -->
 				<div class="card shadow-sm mb-4 overflow-hidden">
 					<div class="table-responsive">
-						<!-- Bootstrapのテーブルクラスを適用 -->
+						<!-- テーブルクラスを適用 -->
 						<table class="table table-hover align-middle mb-0">
 							<thead class="table-dark">
 								<tr>
@@ -100,7 +100,7 @@
 											<input class="form-check-input" type="checkbox" name="selectedTasksId"
 												th:value="${task.taskId}">
 										</td>
-										<!-- カテゴリーごとのバッジ装飾 -->
+										<!-- カテゴリーごとの装飾 -->
 										<td>
 											<th:block th:switch="${task.categoryId}">
 												<span th:case="'1'" class="badge bg-info text-dark">仕事</span>
@@ -110,7 +110,7 @@
 										<td>
 											<span class="fw-bold text-dark" th:text="${task.title}">タイトル</span>
 										</td>
-										<!-- 進捗状況ごとの色分けバッジ -->
+										<!-- 進捗状況ごとの色分け -->
 										<td>
 											<th:block th:switch="${task.progress}">
 												<span th:case="'0'" class="badge bg-secondary">未着手</span>
@@ -123,14 +123,13 @@
 										<td th:text="${task.closingDateFormatted}" class="text-muted small"></td>
 										<td th:text="${task.memo}" class="text-truncate" style="max-width: 200px;"></td>
 
-										<!-- 更新ボタン（青系の小さいデザイン） -->
 										<td class="text-center">
 											<a th:href="@{/tasks/{taskId}/edit(taskId=${task.taskId})}"
 												class="btn btn-outline-primary btn-sm">
 												更新
 											</a>
 										</td>
-										<!-- 削除ボタン（赤系の小さいデザイン） -->
+
 										<td class="text-center">
 											<button type="submit"
 												th:formaction="@{/tasks/{taskId}/delete(taskId=${task.taskId})}"
@@ -147,7 +146,7 @@
 					</div>
 				</div>
 
-				<!-- 下部の一括操作ボタン群 -->
+				<!--				下部の一括操作ボタン群-->
 				<div class="d-flex flex-wrap gap-2 justify-content-end mb-5">
 					<button type="submit" th:formaction="@{/tasks/batch-update}"
 						onclick="return confirm('選択したタスクの進捗状況を進めます。よろしいですか？\n\n未着手 → 進行中\n進行中 → 完了\n\nに変更されます');"
@@ -155,8 +154,7 @@
 						まとめて進捗更新
 					</button>
 					<button type="submit" th:formaction="@{/tasks/batch-delete}"
-						onclick="return confirm('選択したタスクを削除します。よろしいですか？');"
-						class="btn btn-danger shadow-sm">
+						onclick="return confirm('選択したタスクを削除します。よろしいですか？');" class="btn btn-danger shadow-sm">
 						まとめて削除
 					</button>
 					<button type="submit" th:formaction="@{/tasks/delete-completed}"
