@@ -3,24 +3,53 @@
 
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>ログイン</title>
+	<link href="/bootstrap/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body>
-	<header>
-		<h1>ToDoアプリ ログイン</h1>
-	</header>
-	<main>
-		<form action="/login" method="post">
-			<input type="text" name="name" placeholder="名前"><br>
-			<input type="password" name="password" placeholder="パスワード"><br>
-			<button>ログイン</button>
-			<th:block th:if="${errorList}">
-				<p th:each="error:${errorList}" th:text="${error}" style="color: red;"></p>
-			</th:block>
-		</form>
-		<a href="/users/add">新規登録はこちら</a>
+<body class="bg-light d-flex align-items-center min-vh-100">
+
+	<main class="container" style="max-width: 440px;">
+		<div class="card shadow border-0">
+			<div class="card-body p-4 text-center">
+
+				<header class="mb-4">
+					<h1 class="h4 fw-bold text-dark mb-1">ToDoアプリ</h1>
+				</header>
+
+				<th:block th:if="${errorList}">
+					<div class="alert alert-danger shadow-sm mb-4 text-start" role="alert">
+						<ul class="mb-0 ps-3 small">
+							<li th:each="error : ${errorList}" th:text="${error}">エラーメッセージ</li>
+						</ul>
+					</div>
+				</th:block>
+
+				<form action="/login" method="post" class="mb-3">
+					<div class="form-group mb-3 text-start">
+						<label class="form-label small fw-semibold text-muted" for="login-name">名前</label>
+						<input type="text" class="form-control py-2" id="login-name" name="name" placeholder="名前を入力">
+					</div>
+					<div class="form-group mb-4 text-start">
+						<label class="form-label small fw-semibold text-muted" for="login-password">パスワード</label>
+						<input type="password" class="form-control py-2" id="login-password" name="password"
+							placeholder="パスワードを入力">
+					</div>
+					<div class="d-grid">
+						<button type="submit" class="btn btn-primary fw-bold py-2 shadow-sm">ログイン</button>
+					</div>
+				</form>
+
+				<div class="border-top pt-3 mt-3">
+					<a href="/users/add" class="small text-decoration-none">新規登録はこちら</a>
+				</div>
+
+			</div>
+		</div>
 	</main>
+
+	<script src="/bootstrap/bootstrap.min.js"></script>
 </body>
 
 </html>

@@ -20,25 +20,27 @@
 			</form>
 		</div>
 
-		<!-- フィルター・並び替えエリア -->
+		<!-- 並び替えエリア -->
 		<div class="card shadow-sm mb-4">
 			<div class="card-body">
 				<form action="/tasks" method="get" class="row g-3 align-items-center">
-					<div class="col-auto d-flex align-items-center gap-3">
-						<span class="fw-bold text-muted small">カテゴリー：</span>
+					<div class="col-auto d-flex align-items-center flex-wrap">
+						<span class="fw-bold text-muted small me-3">カテゴリー：</span>
+						
 						<div class="form-check form-check-inline mb-0">
-							<input class="form-check-input" type="radio" name="categoryId" id="catAll" value="0"
-								checked>
+							<input class="form-check-input" type="radio" name="categoryId" id="catAll" value="0" checked>
 							<label class="form-check-label" for="catAll">全て</label>
 						</div>
-						<div class="form-check form-check-inline mb-0">
-							<input class="form-check-input" type="radio" name="categoryId" id="catDaily" value="2">
-							<label class="form-check-label" for="catDaily">日常</label>
+						
+						<div class="form-check form-check-inline mb-0" th:each="category : ${categories}">
+							<input class="form-check-input" type="radio" name="categoryId"
+								th:id="'cat-' + ${category.categoryId}" th:value="${category.categoryId}">
+							<label class="form-check-label small" th:for="'cat-' + ${category.categoryId}"
+								th:text="${category.categoryName}">
+								カテゴリー名
+							</label>
 						</div>
-						<div class="form-check form-check-inline mb-0">
-							<input class="form-check-input" type="radio" name="categoryId" id="catWork" value="1">
-							<label class="form-check-label" for="catWork">仕事</label>
-						</div>
+
 					</div>
 					<div class="col-auto">
 						<button class="btn btn-outline-secondary btn-sm">並び替え</button>
@@ -46,6 +48,7 @@
 				</form>
 			</div>
 		</div>
+
 
 		<!-- タスクが存在しない場合の表示 -->
 		<th:block th:unless="${showContent}">
@@ -61,7 +64,6 @@
 				<!-- 丸角・シャドウ付きのカードにする -->
 				<div class="card shadow-sm mb-4 overflow-hidden">
 					<div class="table-responsive">
-						<!-- テーブルクラスを適用 -->
 						<table class="table table-hover align-middle mb-0">
 							<thead class="table-dark">
 								<tr>

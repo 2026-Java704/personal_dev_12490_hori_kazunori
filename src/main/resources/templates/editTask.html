@@ -1,72 +1,109 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://thymeleaf.org">
 
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>タスク更新</title>
+	<link href="/bootstrap/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<header th:replace="~{header}"></header>
+<body class="bg-light">
+	<header th:replace="~{header}"></header>
 
-<body>
-	<main>
-		<h1>タスク更新</h1>
+	<main class="container my-5" style="max-width: 800px;">
+		<h1 class="h4 mb-4 text-secondary border-bottom pb-2">タスク更新</h1>
+
+		<th:block th:if="${errorList}">
+			<div class="alert alert-danger shadow-sm mb-4" role="alert">
+				<ul class="mb-0 ps-3">
+					<li th:each="error : ${errorList}" th:text="${error}">エラーメッセージ</li>
+				</ul>
+			</div>
+		</th:block>
+
 		<form th:action="@{/tasks/{taskId}/edit(taskId=${task.taskId})}" method="post">
-			<table border="1">
-				<tr>
-					<th>カテゴリー</th>
-					<td>
-						<input type="radio" name="categoryId" th:field="${task.categoryId}" value="2" checked>日常
-						<input type="radio" name="categoryId" th:field="${task.categoryId}" value="1">仕事
-					</td>
-				</tr>
-				<tr>
-					<th>タイトル</th>
-					<td>
-						<input type="text" name="title" th:value="${task.title}">
-					</td>
-				</tr>
-				<tr>
-					<th>タ進捗状況</th>
-					<td>
-						<input type="radio" name="progress" th:field="${task.progress}" value="0" checked>未着手
-						<input type="radio" name="progress" th:field="${task.progress}" value="1">進行中
-						<input type="radio" name="progress" th:field="${task.progress}" value="2">完了
-					</td>
-				</tr>
-				<tr>
-					<th>タスク開始日</th>
-					<td>
-						<input type="date" name="date"
-							th:value="${task.date != null ? #temporals.format(task.date, 'yyyy-MM-dd') : ''}">
-					</td>
-				</tr>
-				<tr>
-					<th>期限</th>
-					<td>
-						<input type="date" name="closingDate"
-							th:value="${task.closingDate != null ? #temporals.format(task.closingDate, 'yyyy-MM-dd') : ''}">
-					</td>
-				</tr>
-				<tr>
-					<th>予定所要時間</th>
-					<td>
-						<label><input type="number" name="time" th:value="${task.time}">分</label>
-					</td>
-				</tr>
-				<tr>
-					<th>メモ</th>
-					<td>
-						<textarea name="memo" style="width:200px; height:80px;" th:text="${task.memo}"></textarea>
-					</td>
-				</tr>
-			</table>
-			<button>更新</button>
-			<th:block th:if="${errorList}">
-				<p th:each="error:${errorList}" th:text="${error}" style="color: red;"></p>
-			</th:block>
+			<div class="card shadow-sm mb-4 overflow-hidden">
+				<div class="table-responsive">
+					<table class="table align-middle mb-0">
+						<tbody>
+							<tr>
+								<th class="table-dark text-white fw-normal" style="width: 25%;">カテゴリー</th>
+								<td>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="radio" name="categoryId" id="cat-daily" th:field="${task.categoryId}" value="2" checked>
+										<label class="form-check-label" for="cat-daily">日常</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="radio" name="categoryId" id="cat-work" th:field="${task.categoryId}" value="1">
+										<label class="form-check-label" for="cat-work">仕事</label>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th class="table-dark text-white fw-normal">タイトル</th>
+								<td>
+									<input type="text" class="form-control" name="title" th:value="${task.title}" placeholder="タスクのタイトルを入力">
+								</td>
+							</tr>
+							<tr>
+								<th class="table-dark text-white fw-normal">進捗状況</th>
+								<td>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="radio" name="progress" id="prog-todo" th:field="${task.progress}" value="0" checked>
+										<label class="form-check-label" for="prog-todo">未着手</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="radio" name="progress" id="prog-doing" th:field="${task.progress}" value="1">
+										<label class="form-check-label" for="prog-doing">進行中</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="radio" name="progress" id="prog-done" th:field="${task.progress}" value="2">
+										<label class="form-check-label" for="prog-done">完了</label>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th class="table-dark text-white fw-normal">タスク開始日</th>
+								<td>
+									<input type="date" class="form-control" name="date" style="max-width: 240px;"
+										th:value="${task.date != null ? #temporals.format(task.date, 'yyyy-MM-dd') : ''}">
+								</td>
+							</tr>
+							<tr>
+								<th class="table-dark text-white fw-normal">期限</th>
+								<td>
+									<input type="date" class="form-control" name="closingDate" style="max-width: 240px;"
+										th:value="${task.closingDate != null ? #temporals.format(task.closingDate, 'yyyy-MM-dd') : ''}">
+								</td>
+							</tr>
+							<tr>
+								<th class="table-dark text-white fw-normal">予定所要時間</th>
+								<td>
+									<div class="input-group" style="max-width: 160px;">
+										<input type="number" class="form-control" name="time" th:value="${task.time}" min="0">
+										<span class="input-group-text">分</span>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th class="table-dark text-white fw-normal">メモ</th>
+								<td>
+									<textarea class="form-control" name="memo" rows="3" placeholder="メモを入力してください" th:text="${task.memo}"></textarea>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<div class="d-flex gap-2 justify-content-end">
+				<a href="/tasks" class="btn btn-outline-secondary px-4">戻る</a>
+				<button type="submit" class="btn btn-primary px-4 shadow-sm">更新する</button>
+			</div>
 		</form>
 	</main>
+	<script src="/bootstrap/bootstrap.min.js"></script>
 </body>
 
 </html>

@@ -2,95 +2,102 @@
 <html xmlns:th="http://thymeleaf.org">
 
 <head>
-    <meta charset="UTF-8">
-    <title>新規タスク作成</title>
-    <link href="/bootstrap/bootstrap.min.css" rel="stylesheet">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>新規タスク作成</title>
+	<link href="/bootstrap/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body class="bg-light">
+	<header th:replace="~{header}"></header>
 
-    <!-- 共通ヘッダーの埋め込み -->
-    <header th:replace="~{header}"></header>
+	<main class="container my-5" style="max-width: 800px;">
+		<h1 class="h4 mb-4 text-secondary border-bottom pb-2">新規タスク作成</h1>
 
-    <main class="container my-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
-                <!-- カード型のコンテナ -->
-                <div class="card shadow-sm border-0">
-                    <div class="card-body p-4">
-                        <h1 class="h3 mb-4 fw-bold text-dark border-bottom pb-2">新規タスク作成</h1>
-                        
-                        <form action="/tasks/create" method="post">
-                            
-                            <!-- カテゴリー (ラジオボタン) -->
-                            <div class="mb-3">
-                                <label class="form-label d-block fw-semibold">カテゴリー</label>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="categoryId" id="categoryDaily" value="2" checked>
-                                    <label class="form-check-label" for="categoryDaily">日常</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="categoryId" id="categoryWork" value="1">
-                                    <label class="form-check-label" for="categoryWork">仕事</label>
-                                </div>
-                            </div>
+		<th:block th:if="${errorList}">
+			<div class="alert alert-danger shadow-sm mb-4" role="alert">
+				<ul class="mb-0 ps-3">
+					<li th:each="error : ${errorList}" th:text="${error}">エラーメッセージ</li>
+				</ul>
+			</div>
+		</th:block>
 
-                            <!-- タイトル -->
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold" for="title">タイトル</label>
-                                <input type="text" class="form-control" name="title" id="title" th:value="${task.title}" placeholder="タスク名を入力">
-                            </div>
+		<form action="/tasks/create" method="post">
+			<div class="card shadow-sm mb-4 overflow-hidden">
+				<div class="table-responsive">
+					<table class="table align-middle mb-0">
+						<tbody>
+							<tr>
+								<th class="table-dark text-white fw-normal" style="width: 25%;">カテゴリー</th>
+								<td>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="radio" name="categoryId"
+											id="categoryDaily" value="2" checked>
+										<label class="form-check-label" for="categoryDaily">日常</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="radio" name="categoryId" id="categoryWork"
+											value="1">
+										<label class="form-check-label" for="categoryWork">仕事</label>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th class="table-dark text-white fw-normal">タイトル</th>
+								<td>
+									<input type="text" class="form-control" name="title" id="title"
+										th:value="${task.title}" placeholder="タスクのタイトルを入力">
+								</td>
+							</tr>
+							<tr>
+								<th class="table-dark text-white fw-normal">タスク開始日</th>
+								<td>
+									<input type="date" class="form-control" name="date" id="date"
+										style="max-width: 240px;"
+										th:value="${task.date != null ? #temporals.format(task.date, 'yyyy-MM-dd') : ''}">
+								</td>
+							</tr>
+							<tr>
+								<th class="table-dark text-white fw-normal">期限</th>
+								<td>
+									<input type="date" class="form-control" name="closingDate" id="closingDate"
+										style="max-width: 240px;"
+										th:value="${task.closingDate != null ? #temporals.format(task.closingDate, 'yyyy-MM-dd') : ''}">
+								</td>
+							</tr>
+							<tr>
+								<th class="table-dark text-white fw-normal">予定所要時間</th>
+								<td>
+									<div class="input-group" style="max-width: 160px;">
+										<input type="number" class="form-control" name="time" id="time"
+											th:value="${task.time}" placeholder="0">
+										<span class="input-group-text">分</span>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th class="table-dark text-white fw-normal">メモ</th>
+								<td>
+									<textarea class="form-control" name="memo" id="memo" rows="3" placeholder="詳細を入力"
+										th:text="${task.memo}"></textarea>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
 
-                            <!-- 日付エリア (2カラム並列) -->
-                            <div class="row g-3 mb-3">
-                                <div class="col-6">
-                                    <label class="form-label fw-semibold" for="date">タスク開始日</label>
-                                    <input type="date" class="form-control" name="date" id="date"
-                                        th:value="${task.date != null ? #temporals.format(task.date, 'yyyy-MM-dd') : ''}">
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label fw-semibold" for="closingDate">期限</label>
-                                    <input type="date" class="form-control" name="closingDate" id="closingDate"
-                                        th:value="${task.closingDate != null ? #temporals.format(task.closingDate, 'yyyy-MM-dd') : ''}">
-                                </div>
-                            </div>
+			<input type="hidden" name="progress" value="0">
 
-                            <!-- 予定所要時間 -->
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold" for="time">予定所要時間</label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control" name="time" id="time" th:value="${task.time}" placeholder="0">
-                                    <span class="input-group-text">分</span>
-                                </div>
-                            </div>
+			<div class="d-flex gap-2 justify-content-end">
+				<a href="/tasks" class="btn btn-outline-secondary px-4">戻る</a>
+				<button type="submit" class="btn btn-primary px-4 shadow-sm">新規作成</button>
+			</div>
 
-                            <!-- メモ -->
-                            <div class="mb-4">
-                                <label class="form-label fw-semibold" for="memo">メモ</label>
-                                <textarea class="form-control" name="memo" id="memo" rows="3" placeholder="詳細を入力" th:text="${task.memo}"></textarea>
-                            </div>
+		</form>
+	</main>
 
-                            <!-- 隠しフィールド -->
-                            <input type="hidden" name="progress" value="0">
-
-                            <!-- エラーメッセージ -->
-                            <div th:if="${errorList}" class="alert alert-danger py-2 mb-3">
-                                <p th:each="error:${errorList}" th:text="${error}" class="mb-0 small"></p>
-                            </div>
-
-                            <!-- 送信ボタン -->
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary fw-bold py-2">新規作成</button>
-                            </div>
-                            
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <script src="/bootstrap/bootstrap.min.js"></script>
+	<script src="/bootstrap/bootstrap.min.js"></script>
 </body>
 
 </html>

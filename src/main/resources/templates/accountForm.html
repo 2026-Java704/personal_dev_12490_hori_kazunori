@@ -3,39 +3,60 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>Insert title here</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>新規登録画面</title>
+	<link href="/bootstrap/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body>
-	<main>
-		<h1>新規登録画面</h1>
+<body class="bg-light">
+
+	<main class="container my-5" style="max-width: 800px;">
+		<h1 class="h4 mb-4 text-secondary border-bottom pb-2">新規登録画面</h1>
+		
+		<th:block th:if="${errorList}">
+			<div class="alert alert-danger shadow-sm mb-4" role="alert">
+				<ul class="mb-0 ps-3">
+					<li th:each="error : ${errorList}" th:text="${error}">エラーメッセージ</li>
+				</ul>
+			</div>
+		</th:block>
+
 		<form action="/users/add" method="post">
-			<table border="1">
-				<tr>
-					<th>ユーザー名</th>
-					<td>
-						<input type="text" name="name" th:value="${name}">
-					</td>
-				</tr>
-				<tr>
-					<th>パスワード</th>
-					<td>
-						<input type="text" name="password">
-					</td>
-				</tr>
-				<tr>
-					<th>確認パスワード</th>
-					<td>
-						<input type="text" name="passwordConfirm">
-					</td>
-				</tr>
-			</table>
-			<button>登録</button>
-			<th:block th:if="${errorList}">
-				<p th:each="error:${errorList}" th:text="${error}" style="color: red;"></p>
-			</th:block>
+			<div class="card shadow-sm mb-4 overflow-hidden">
+				<div class="table-responsive">
+					<table class="table align-middle mb-0">
+						<tbody>
+							<tr>
+								<th class="table-dark text-white fw-normal" style="width: 25%;">ユーザー名</th>
+								<td>
+									<input type="text" class="form-control" name="name" th:value="${name}" placeholder="ユーザー名を入力">
+								</td>
+							</tr>
+							<tr>
+								<th class="table-dark text-white fw-normal">パスワード</th>
+								<td>
+									<input type="text" class="form-control" name="password" placeholder="パスワードを入力">
+								</td>
+							</tr>
+							<tr>
+								<th class="table-dark text-white fw-normal">確認パスワード</th>
+								<td>
+									<input type="text" class="form-control" name="passwordConfirm" placeholder="もう一度パスワードを入力">
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<div class="d-flex gap-2 justify-content-end">
+				<a href="/login" class="btn btn-outline-secondary px-4">ログイン画面へ</a>
+				<button type="submit" class="btn btn-primary px-4 shadow-sm">登録</button>
+			</div>
 		</form>
 	</main>
+
+	<script src="/bootstrap/bootstrap.min.js"></script>
 </body>
 
 </html>

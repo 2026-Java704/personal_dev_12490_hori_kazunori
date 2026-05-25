@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.demo.entity.Categories;
 import com.example.demo.entity.Tasks;
 import com.example.demo.model.Account;
 import com.example.demo.repository.CategoriesRepository;
@@ -29,18 +30,23 @@ public class TasksController {
 	private final Account account;
 
 	private final TasksRepository tasksRepository;
+	private final CategoriesRepository categoriesRepository;
 
 	public TasksController(HttpSession session, Account account, UsersRepository usersRepository,
 			CategoriesRepository categoriesRepository, TasksRepository tasksRepository) {
 		this.session = session;
 		this.account = account;
 		this.tasksRepository = tasksRepository;
+		this.categoriesRepository = categoriesRepository;
 	}
 
 	//	一覧表示
 	@GetMapping("/tasks")
 	public String index(@RequestParam(defaultValue = "0") Integer categoryId,
 			Model model) {
+		List<Categories> categories = categoriesRepository.findAll();
+		model.addAttribute("categories", categories);
+
 		List<Tasks> taskList = null;
 		if (categoryId == 0) {
 			taskList = tasksRepository.findByUserIdOrderByDateAsc(account.getUserId());
