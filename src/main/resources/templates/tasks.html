@@ -24,24 +24,27 @@
 		<div class="card shadow-sm mb-4">
 			<div class="card-body">
 				<form action="/tasks" method="get" class="row g-3 align-items-center">
+					
 					<div class="col-auto d-flex align-items-center flex-wrap">
 						<span class="fw-bold text-muted small me-3">カテゴリー：</span>
 						
 						<div class="form-check form-check-inline mb-0">
-							<input class="form-check-input" type="radio" name="categoryId" id="catAll" value="0" checked>
+							<input class="form-check-input" type="radio" name="categoryId" id="catAll" value="0" 
+								th:checked="${selectedCategoryId == 0}">
 							<label class="form-check-label" for="catAll">全て</label>
 						</div>
 						
 						<div class="form-check form-check-inline mb-0" th:each="category : ${categories}">
 							<input class="form-check-input" type="radio" name="categoryId"
-								th:id="'cat-' + ${category.categoryId}" th:value="${category.categoryId}">
+								th:id="'cat-' + ${category.categoryId}" th:value="${category.categoryId}"
+								th:checked="${selectedCategoryId == category.categoryId}">
 							<label class="form-check-label small" th:for="'cat-' + ${category.categoryId}"
 								th:text="${category.categoryName}">
 								カテゴリー名
 							</label>
 						</div>
-
 					</div>
+
 					<div class="col-auto">
 						<button class="btn btn-outline-secondary btn-sm">並び替え</button>
 					</div>
@@ -57,7 +60,7 @@
 			</div>
 		</th:block>
 
-		<!-- タスクが存在する場合のメインコンテンツ -->
+		<!-- タスクが存在する場合の表示 -->
 		<th:block th:if="${showContent}">
 			<form method="post">
 
@@ -148,7 +151,7 @@
 					</div>
 				</div>
 
-				<!--				下部の一括操作ボタン群-->
+				<!-- 下部の一括操作ボタン群 -->
 				<div class="d-flex flex-wrap gap-2 justify-content-end mb-5">
 					<button type="submit" th:formaction="@{/tasks/batch-update}"
 						onclick="return confirm('選択したタスクの進捗状況を進めます。よろしいですか？\n\n未着手 → 進行中\n進行中 → 完了\n\nに変更されます');"

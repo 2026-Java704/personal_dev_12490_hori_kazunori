@@ -81,7 +81,7 @@
 								<th class="table-dark text-white fw-normal">予定所要時間</th>
 								<td>
 									<div class="input-group" style="max-width: 160px;">
-										<input type="number" class="form-control" name="time" th:value="${task.time}" min="0">
+										<input type="number" class="form-control" name="time" th:value="${task.time}">
 										<span class="input-group-text">分</span>
 									</div>
 								</td>
@@ -89,7 +89,7 @@
 							<tr>
 								<th class="table-dark text-white fw-normal">メモ</th>
 								<td>
-									<textarea class="form-control" name="memo" rows="3" placeholder="メモを入力してください" th:text="${task.memo}"></textarea>
+									<textarea class="form-control" name="memo" rows="3" placeholder="メモを入力してください(任意)" th:text="${task.memo}"></textarea>
 								</td>
 							</tr>
 						</tbody>

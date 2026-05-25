@@ -46,6 +46,7 @@ public class TasksController {
 			Model model) {
 		List<Categories> categories = categoriesRepository.findAll();
 		model.addAttribute("categories", categories);
+		model.addAttribute("selectedCategoryId", categoryId);
 
 		List<Tasks> taskList = null;
 		if (categoryId == 0) {
@@ -93,27 +94,45 @@ public class TasksController {
 
 	//	タスク一新規作成
 	@PostMapping("/tasks/create")
-	public String register(@RequestParam Integer categoryId, @RequestParam(defaultValue = "") String title,
+	public String register(@RequestParam(defaultValue = "") Integer categoryId,
+			@RequestParam(defaultValue = "") String title,
 			@DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate date,
 			@DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate closingDate,
 			@RequestParam(defaultValue = "") Integer time,
 			@RequestParam(defaultValue = "") String memo,
 			@RequestParam(defaultValue = "") Integer progress,
 			Model model) {
+		LocalDate currentDate = LocalDate.now();
+
 		Tasks task = new Tasks(account.getUserId(), categoryId, title, date, closingDate, progress, time, memo);
 		// エラー
 		List<String> errorList = new ArrayList<>();
+		if (categoryId == null) {
+			errorList.add("カテゴリーを選択してください");
+		}
 		if (title.equals("")) {
 			errorList.add("タイトルを入力してください");
 		}
 		if (date == null) {
 			errorList.add("タスク開始日を入力してください");
+		} else if (date.isBefore(currentDate)) {
+			errorList.add("タスク開始日は本日以降を入力してください");
 		}
 		if (closingDate == null) {
 			errorList.add("期限を入力してください");
+		} else if (date != null) {
+			if (closingDate.isBefore(date)) {
+				errorList.add("期限はタスク開始日以降を入力してください");
+			} else if (closingDate.isBefore(currentDate)) {
+				errorList.add("期限は本日以降を入力してください");
+			}
+		} else if (closingDate.isBefore(currentDate)) {
+			errorList.add("期限は本日以降を入力してください");
 		}
 		if (time == null) {
 			errorList.add("予定所要時間を入力してください");
+		} else if (time < 1) {
+			errorList.add("予定所要時間は1分以上入力してください");
 		}
 
 		if (errorList.size() > 0) {
@@ -147,6 +166,8 @@ public class TasksController {
 			@RequestParam(defaultValue = "") String memo,
 			@RequestParam(defaultValue = "") Integer progress,
 			Model model) {
+		LocalDate currentDate = LocalDate.now();
+
 		Tasks task = new Tasks(account.getUserId(), taskId, categoryId, title, date, closingDate, progress, time, memo);
 		// エラー
 		List<String> errorList = new ArrayList<>();
@@ -155,12 +176,24 @@ public class TasksController {
 		}
 		if (date == null) {
 			errorList.add("タスク開始日を入力してください");
+		} else if (date.isBefore(currentDate)) {
+			errorList.add("タスク開始日は本日以降を入力してください");
 		}
 		if (closingDate == null) {
 			errorList.add("期限を入力してください");
+		} else if (date != null) {
+			if (closingDate.isBefore(date)) {
+				errorList.add("期限はタスク開始日以降を入力してください");
+			} else if (closingDate.isBefore(currentDate)) {
+				errorList.add("期限は本日以降を入力してください");
+			}
+		} else if (closingDate.isBefore(currentDate)) {
+			errorList.add("期限は本日以降を入力してください");
 		}
 		if (time == null) {
 			errorList.add("予定所要時間を入力してください");
+		} else if (time < 1) {
+			errorList.add("予定所要時間は1分以上入力してください");
 		}
 
 		if (errorList.size() > 0) {
