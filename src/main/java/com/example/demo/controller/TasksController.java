@@ -129,6 +129,8 @@ public class TasksController {
 		}
 		if (title.equals("")) {
 			errorList.add("タイトルを入力してください");
+		} else if (title.length() > 50) {
+			errorList.add("タイトルは50文字以下で入力してください");
 		}
 		if (date == null) {
 			errorList.add("タスク開始日を入力してください");
@@ -137,19 +139,23 @@ public class TasksController {
 		}
 		if (closingDate == null) {
 			errorList.add("期限を入力してください");
-		} else if (date != null) {
-			if (closingDate.isBefore(date)) {
+		} else {
+			// 1. 開始日が入力されている場合、開始日と比較するだけで十分（開始日が本日以降なため）
+			if (date != null && closingDate.isBefore(date)) {
 				errorList.add("期限はタスク開始日以降を入力してください");
-			} else if (closingDate.isBefore(currentDate)) {
+			}
+			// 2. 開始日が未入力の場合のみ、今日と比較する
+			else if (date == null && closingDate.isBefore(currentDate)) {
 				errorList.add("期限は本日以降を入力してください");
 			}
-		} else if (closingDate.isBefore(currentDate)) {
-			errorList.add("期限は本日以降を入力してください");
 		}
 		if (time == null) {
 			errorList.add("予定所要時間を入力してください");
 		} else if (time < 1) {
 			errorList.add("予定所要時間は1分以上入力してください");
+		}
+		if (memo.length() > 1000) {
+			errorList.add("メモは1000文字以下で入力してください");
 		}
 
 		if (errorList.size() > 0) {
@@ -170,6 +176,7 @@ public class TasksController {
 		Tasks task = tasksRepository.findByUserIdAndTaskId(account.getUserId(), taskId);
 
 		model.addAttribute("task", task);
+		model.addAttribute("criteriaDate", task.getDate());
 		return "editTask";
 	}
 
@@ -182,40 +189,42 @@ public class TasksController {
 			@RequestParam(defaultValue = "") Integer time,
 			@RequestParam(defaultValue = "") String memo,
 			@RequestParam(defaultValue = "") Integer progress,
+			@DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate criteriaDate,
 			Model model) {
-		LocalDate currentDate = LocalDate.now();
 
 		Tasks task = new Tasks(account.getUserId(), taskId, categoryId, title, date, closingDate, progress, time, memo);
 		// エラー
 		List<String> errorList = new ArrayList<>();
 		if (title.equals("")) {
 			errorList.add("タイトルを入力してください");
+		} else if (title.length() > 50) {
+			errorList.add("タイトルは50文字以下で入力してください");
 		}
 		if (date == null) {
 			errorList.add("タスク開始日を入力してください");
-		} else if (date.isBefore(currentDate)) {
-			errorList.add("タスク開始日は本日以降を入力してください");
+		} else if (date.isBefore(criteriaDate)) {
+			errorList.add("タスク開始日は元の開始日以降を入力してください");
 		}
 		if (closingDate == null) {
 			errorList.add("期限を入力してください");
 		} else if (date != null) {
 			if (closingDate.isBefore(date)) {
 				errorList.add("期限はタスク開始日以降を入力してください");
-			} else if (closingDate.isBefore(currentDate)) {
-				errorList.add("期限は本日以降を入力してください");
 			}
-		} else if (closingDate.isBefore(currentDate)) {
-			errorList.add("期限は本日以降を入力してください");
 		}
 		if (time == null) {
 			errorList.add("予定所要時間を入力してください");
 		} else if (time < 1) {
 			errorList.add("予定所要時間は1分以上入力してください");
 		}
+		if (memo.length() > 1000) {
+			errorList.add("メモは1000文字以下で入力してください");
+		}
 
 		if (errorList.size() > 0) {
 			model.addAttribute("errorList", errorList);
 			model.addAttribute("task", task);
+			model.addAttribute("criteriaDate", criteriaDate);
 			return "editTask";
 		}
 

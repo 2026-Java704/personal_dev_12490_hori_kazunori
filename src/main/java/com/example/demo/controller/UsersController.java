@@ -50,6 +50,8 @@ public class UsersController {
 		List<String> errorList = new ArrayList<>();
 		if (name.equals("") || name.length() == 0) {
 			errorList.add("名前を入力してください");
+		} else if (name.length() > 20) {
+			errorList.add("名前は20文字以下で入力してください");
 		}
 		if (password.equals("") || password.length() == 0) {
 			errorList.add("パスワードを入力してください");
@@ -89,6 +91,8 @@ public class UsersController {
 		List<String> errorList = new ArrayList<>();
 		if (name.equals("") || name.length() == 0) {
 			errorList.add("名前を入力してください");
+		} else if (name.length() > 20) {
+			errorList.add("名前は20文字以下で入力してください");
 		}
 		if (password.equals("") || password.length() == 0) {
 			errorList.add("パスワードを入力してください");

@@ -31,11 +31,13 @@
 								<th class="table-dark text-white fw-normal" style="width: 25%;">カテゴリー</th>
 								<td>
 									<div class="form-check form-check-inline">
-										<input class="form-check-input" type="radio" name="categoryId" id="cat-daily" th:field="${task.categoryId}" value="2" checked>
+										<input class="form-check-input" type="radio" name="categoryId" id="cat-daily"
+											th:field="${task.categoryId}" value="2" checked>
 										<label class="form-check-label" for="cat-daily">日常</label>
 									</div>
 									<div class="form-check form-check-inline">
-										<input class="form-check-input" type="radio" name="categoryId" id="cat-work" th:field="${task.categoryId}" value="1">
+										<input class="form-check-input" type="radio" name="categoryId" id="cat-work"
+											th:field="${task.categoryId}" value="1">
 										<label class="form-check-label" for="cat-work">仕事</label>
 									</div>
 								</td>
@@ -43,22 +45,26 @@
 							<tr>
 								<th class="table-dark text-white fw-normal">タイトル</th>
 								<td>
-									<input type="text" class="form-control" name="title" th:value="${task.title}" placeholder="タスクのタイトルを入力">
+									<input type="text" class="form-control" name="title" th:value="${task.title}"
+										placeholder="タスクのタイトルを入力">
 								</td>
 							</tr>
 							<tr>
 								<th class="table-dark text-white fw-normal">進捗状況</th>
 								<td>
 									<div class="form-check form-check-inline">
-										<input class="form-check-input" type="radio" name="progress" id="prog-todo" th:field="${task.progress}" value="0" checked>
+										<input class="form-check-input" type="radio" name="progress" id="prog-todo"
+											th:field="${task.progress}" value="0" checked>
 										<label class="form-check-label" for="prog-todo">未着手</label>
 									</div>
 									<div class="form-check form-check-inline">
-										<input class="form-check-input" type="radio" name="progress" id="prog-doing" th:field="${task.progress}" value="1">
+										<input class="form-check-input" type="radio" name="progress" id="prog-doing"
+											th:field="${task.progress}" value="1">
 										<label class="form-check-label" for="prog-doing">進行中</label>
 									</div>
 									<div class="form-check form-check-inline">
-										<input class="form-check-input" type="radio" name="progress" id="prog-done" th:field="${task.progress}" value="2">
+										<input class="form-check-input" type="radio" name="progress" id="prog-done"
+											th:field="${task.progress}" value="2">
 										<label class="form-check-label" for="prog-done">完了</label>
 									</div>
 								</td>
@@ -89,13 +95,17 @@
 							<tr>
 								<th class="table-dark text-white fw-normal">メモ</th>
 								<td>
-									<textarea class="form-control" name="memo" rows="3" placeholder="メモを入力してください(任意)" th:text="${task.memo}"></textarea>
+									<textarea class="form-control" name="memo" rows="3" placeholder="メモを入力してください(任意)"
+										th:text="${task.memo}"></textarea>
 								</td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
 			</div>
+
+			<input type="hidden" name="criteriaDate" th:value="${#temporals.format(criteriaDate, 'yyyy-MM-dd')}">
+
 
 			<div class="d-flex gap-2 justify-content-end">
 				<a href="/tasks" class="btn btn-outline-secondary px-4">戻る</a>
