@@ -22,26 +22,47 @@
 
 		<!-- 並び替えエリア -->
 		<div class="card shadow-sm mb-4">
-			<div class="card-body">
+			<div class="card-body py-2">
 				<form action="/tasks" method="get" class="row g-3 align-items-center">
-					
-					<div class="col-auto d-flex align-items-center flex-wrap">
+
+					<div class="col-auto d-flex align-items-center">
 						<span class="fw-bold text-muted small me-3">カテゴリー：</span>
-						
-						<div class="form-check form-check-inline mb-0">
-							<input class="form-check-input" type="radio" name="categoryId" id="catAll" value="0" 
-								th:checked="${selectedCategoryId == 0}">
-							<label class="form-check-label" for="catAll">全て</label>
+
+						<div class="d-flex align-items-center gap-3">
+							<div class="form-check form-check-inline mb-0 d-flex align-items-center">
+								<input class="form-check-input me-1" type="radio" name="categoryId" id="catAll"
+									value="0" th:checked="${selectedCategoryId == 0}">
+								<label class="form-check-label small" for="catAll">全て</label>
+							</div>
+
+							<div class="form-check form-check-inline mb-0 d-flex align-items-center"
+								th:each="category : ${categories}">
+								<input class="form-check-input me-1" type="radio" name="categoryId"
+									th:id="'cat-' + ${category.categoryId}" th:value="${category.categoryId}"
+									th:checked="${selectedCategoryId == category.categoryId}">
+								<label class="form-check-label small" th:for="'cat-' + ${category.categoryId}"
+									th:text="${category.categoryName}">
+									カテゴリー名
+								</label>
+							</div>
 						</div>
-						
-						<div class="form-check form-check-inline mb-0" th:each="category : ${categories}">
-							<input class="form-check-input" type="radio" name="categoryId"
-								th:id="'cat-' + ${category.categoryId}" th:value="${category.categoryId}"
-								th:checked="${selectedCategoryId == category.categoryId}">
-							<label class="form-check-label small" th:for="'cat-' + ${category.categoryId}"
-								th:text="${category.categoryName}">
-								カテゴリー名
-							</label>
+					</div>
+
+					<div class="col-auto d-flex align-items-center ms-2">
+						<span class="fw-bold text-muted small me-3">並び順：</span>
+
+						<div class="d-flex align-items-center gap-3">
+							<div class="form-check form-check-inline mb-0 d-flex align-items-center">
+								<input class="form-check-input me-1" type="radio" name="sort" id="sortAsc" value="asc"
+									th:checked="${selectedSort == 'asc'}">
+								<label class="form-check-label small" for="sortAsc">昇順</label>
+							</div>
+
+							<div class="form-check form-check-inline mb-0 d-flex align-items-center">
+								<input class="form-check-input me-1" type="radio" name="sort" id="sortDesc" value="desc"
+									th:checked="${selectedSort == 'desc'}">
+								<label class="form-check-label small" for="sortDesc">降順</label>
+							</div>
 						</div>
 					</div>
 
@@ -51,6 +72,7 @@
 				</form>
 			</div>
 		</div>
+
 
 
 		<!-- タスクが存在しない場合の表示 -->

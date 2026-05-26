@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -43,20 +44,36 @@ public class TasksController {
 	//	一覧表示
 	@GetMapping("/tasks")
 	public String index(@RequestParam(defaultValue = "0") Integer categoryId,
+			@RequestParam(defaultValue = "asc") String sort,
 			Model model) {
 		List<Categories> categories = categoriesRepository.findAll();
 		model.addAttribute("categories", categories);
 		model.addAttribute("selectedCategoryId", categoryId);
+		model.addAttribute("selectedSort", sort);
 
 		List<Tasks> taskList = null;
+		Map<LocalDate, List<Tasks>> tasksByDate;
 		if (categoryId == 0) {
-			taskList = tasksRepository.findByUserIdOrderByDateAsc(account.getUserId());
+			if (sort.equals("asc")) {
+				taskList = tasksRepository.findByUserIdOrderByDateAsc(account.getUserId());
+				// 古い順にソートされるMapを用意
+				tasksByDate = new TreeMap<>();
+			} else {
+				taskList = tasksRepository.findByUserIdOrderByDateDesc(account.getUserId());
+				// 新しい順にソートされるMapを用意
+				tasksByDate = new TreeMap<>(Comparator.reverseOrder());
+			}
 		} else {
-			taskList = tasksRepository.findByUserIdAndCategoryIdOrderByDateAsc(account.getUserId(), categoryId);
+			if (sort.equals("asc")) {
+				taskList = tasksRepository.findByUserIdAndCategoryIdOrderByDateAsc(account.getUserId(), categoryId);
+				// 古い順にソートされるMapを用意
+				tasksByDate = new TreeMap<>();
+			} else {
+				taskList = tasksRepository.findByUserIdAndCategoryIdOrderByDateDesc(account.getUserId(), categoryId);
+				// 新しい順にソートされるMapを用意
+				tasksByDate = new TreeMap<>(Comparator.reverseOrder());
+			}
 		}
-
-		// 古い順にソートされるMapを用意
-		Map<LocalDate, List<Tasks>> tasksByDate = new TreeMap<>();
 
 		if (taskList != null && !taskList.isEmpty()) {
 			for (Tasks task : taskList) {
@@ -85,14 +102,14 @@ public class TasksController {
 
 	}
 
-	//	タスク一新規作成画面遷移
+	//	タスク新規作成画面遷移
 	@GetMapping("/tasks/create")
 	public String create(Model model) {
 		model.addAttribute("task", new Tasks());
 		return "taskForm";
 	}
 
-	//	タスク一新規作成
+	//	タスク新規作成
 	@PostMapping("/tasks/create")
 	public String register(@RequestParam(defaultValue = "") Integer categoryId,
 			@RequestParam(defaultValue = "") String title,
