@@ -20,13 +20,16 @@ public class Users {
 
 	private String password;
 
+	private String email;
+
 	public Users() {
 		// TODO 自動生成されたコンストラクター・スタブ
 	}
 
-	public Users(String name, String password) {
+	public Users(String name, String password, String email) {
 		this.name = name;
 		this.password = password;
+		this.email = email;
 	}
 
 	public Integer getUserId() {
@@ -39,6 +42,10 @@ public class Users {
 
 	public String getPassword() {
 		return password;
+	}
+
+	public String getEmail() {
+		return email;
 	}
 
 }

@@ -12,7 +12,7 @@
 
 	<main class="container my-5" style="max-width: 800px;">
 		<h1 class="h4 mb-4 text-secondary border-bottom pb-2">新規登録画面</h1>
-		
+
 		<th:block th:if="${errorList}">
 			<div class="alert alert-danger shadow-sm mb-4" role="alert">
 				<ul class="mb-0 ps-3">
@@ -29,19 +29,28 @@
 							<tr>
 								<th class="table-dark text-white fw-normal" style="width: 25%;">ユーザー名</th>
 								<td>
-									<input type="text" class="form-control" name="name" th:value="${name}" placeholder="ユーザー名を入力">
+									<input type="text" class="form-control" name="name" th:value="${name}"
+										placeholder="ユーザー名を入力">
+								</td>
+							</tr>
+							<tr>
+								<th class="table-dark text-white fw-normal">メールアドレス</th>
+								<td>
+									<input type="email" class="form-control" name="email" th:value="${email}"
+										placeholder="メールアドレスを入力">
 								</td>
 							</tr>
 							<tr>
 								<th class="table-dark text-white fw-normal">パスワード</th>
 								<td>
-									<input type="text" class="form-control" name="password" placeholder="パスワードを入力">
+									<input type="password" class="form-control" name="password" placeholder="パスワードを入力">
 								</td>
 							</tr>
 							<tr>
 								<th class="table-dark text-white fw-normal">確認パスワード</th>
 								<td>
-									<input type="text" class="form-control" name="passwordConfirm" placeholder="もう一度パスワードを入力">
+									<input type="password" class="form-control" name="passwordConfirm"
+										placeholder="もう一度パスワードを入力">
 								</td>
 							</tr>
 						</tbody>

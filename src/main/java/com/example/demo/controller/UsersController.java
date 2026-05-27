@@ -45,6 +45,7 @@ public class UsersController {
 	@PostMapping("/login")
 	public String login(@RequestParam(defaultValue = "") String name,
 			@RequestParam(defaultValue = "") String password,
+			@RequestParam(defaultValue = "") String email,
 			Model model) {
 		// エラー
 		List<String> errorList = new ArrayList<>();
@@ -56,18 +57,24 @@ public class UsersController {
 		if (password.equals("") || password.length() == 0) {
 			errorList.add("パスワードを入力してください");
 		}
+		if (email.equals("")) {
+			errorList.add("メールアドレスを入力してください");
+		}
+
 		if (errorList.size() == 0) {
-			if (usersRepository.findByNameAndPassword(name, password).size() == 0) {
-				errorList.add("名前とパスワードが一致しませんでした");
+			if (usersRepository.findByNameAndPasswordAndEmail(name, password, email).size() == 0) {
+				errorList.add("もう一度入力してください");
 			}
 		}
 
 		if (errorList.size() > 0) {
 			model.addAttribute("errorList", errorList);
+			model.addAttribute("name", name);
+			model.addAttribute("email", email);
 			return "login";
 		}
 
-		account.setUserId(usersRepository.findByNameAndPassword(name, password).getFirst().getUserId());
+		account.setUserId(usersRepository.findByNameAndPasswordAndEmail(name, password, email).getFirst().getUserId());
 		account.setName(name);
 
 		return "redirect:/tasks";
@@ -86,13 +93,24 @@ public class UsersController {
 			@RequestParam(defaultValue = "") String name,
 			@RequestParam(defaultValue = "") String password,
 			@RequestParam(defaultValue = "") String passwordConfirm,
+			@RequestParam(defaultValue = "") String email,
 			Model model) {
 		// エラー
 		List<String> errorList = new ArrayList<>();
+		List<Users> usersList = usersRepository.findAll();
 		if (name.equals("") || name.length() == 0) {
 			errorList.add("名前を入力してください");
 		} else if (name.length() > 20) {
 			errorList.add("名前は20文字以下で入力してください");
+		}
+		if (email.equals("")) {
+			errorList.add("メールアドレスを入力してください");
+		} else {
+			for (int i = 0; i < usersList.size(); i++) {
+				if (email.equals(usersList.get(i).getEmail())) {
+					errorList.add("入力されたメールアドレスはすでに登録されています");
+				}
+			}
 		}
 		if (password.equals("") || password.length() == 0) {
 			errorList.add("パスワードを入力してください");
@@ -109,10 +127,11 @@ public class UsersController {
 		if (errorList.size() > 0) {
 			model.addAttribute("errorList", errorList);
 			model.addAttribute("name", name);
+			model.addAttribute("email", email);
 			return "accountForm";
 		}
 
-		Users users = new Users(name, password);
+		Users users = new Users(name, password, email);
 		usersRepository.save(users);
 
 		return "redirect:/login";
