@@ -98,6 +98,7 @@
 									<th scope="col">カテゴリー</th>
 									<th scope="col">タイトル</th>
 									<th scope="col">進捗状況</th>
+									<th scope="col">予想時間</th>
 									<th scope="col">開始日</th>
 									<th scope="col">期限</th>
 									<th scope="col">メモ</th>
@@ -148,6 +149,7 @@
 											</th:block>
 										</td>
 
+										<td th:text="${task.time} + '分'" class="text-muted small">分</td>
 										<td th:text="${task.dateFormatted}" class="text-muted small"></td>
 										<td th:text="${task.closingDateFormatted}" class="text-muted small"></td>
 										<td th:text="${task.memo}" class="text-truncate" style="max-width: 200px;"></td>
